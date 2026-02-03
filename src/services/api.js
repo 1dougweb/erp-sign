@@ -8,13 +8,13 @@ const getBaseURL = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
-  
+
   // Em desenvolvimento, usa o proxy do Vite (relativo)
   // O Vite proxy redireciona /api para http://localhost:3000/api
   if (import.meta.env.DEV) {
     return '/api';
   }
-  
+
   // Em produção, usa localhost como fallback
   return 'https://automacao-erp-backend.qiqivn.easypanel.host/api';
 };

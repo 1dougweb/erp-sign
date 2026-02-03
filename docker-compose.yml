@@ -1,0 +1,63 @@
+services:
+  app-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: todo-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - app-backend
+    restart: always
+    networks:
+      - todo-network
+
+  app-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=todo_instalacao
+      - DB_WAIT_FOR_CONNECTIONS=true
+      - DB_CONNECTION_LIMIT=10
+      - DB_QUEUE_LIMIT=0
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - todo-network
+
+  db:
+    image: mysql:8.0
+    container_name: todo-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=todo_instalacao
+    volumes:
+      - db_data:/var/lib/mysql
+      # Initialization script
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+    networks:
+      - todo-network
+    # Healthcheck to ensure DB is ready before backend connects (optional but good)
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
+
+
+networks:
+  todo-network:
+    driver: bridge

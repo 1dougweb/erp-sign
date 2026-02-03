@@ -15,8 +15,9 @@ const getBaseURL = () => {
     return '/api';
   }
 
-  // Em produção, usa localhost como fallback
-  return 'https://automacao-erp-backend.qiqivn.easypanel.host/api';
+  // Em produção, tenta usar caminho relativo primeiro (evita CORS)
+  // Se frontend e backend estiverem no mesmo domínio com path routing
+  return '/api';
 };
 
 const api = axios.create({

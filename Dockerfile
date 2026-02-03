@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-ENV VITE_API_URL=https://automacao-erp-backend.qiqivn.easypanel.host/api
+ENV VITE_API_URL=/api
 RUN npm run build
 
 # Production stage

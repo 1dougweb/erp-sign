@@ -73,6 +73,23 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'API funcionando' });
 });
 
+// CORS test endpoint
+app.all('/api/cors-test', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'CORS test successful',
+    method: req.method,
+    origin: req.headers.origin,
+    headers: req.headers,
+    corsHeadersSet: {
+      'Access-Control-Allow-Origin': res.getHeader('Access-Control-Allow-Origin'),
+      'Access-Control-Allow-Methods': res.getHeader('Access-Control-Allow-Methods'),
+      'Access-Control-Allow-Headers': res.getHeader('Access-Control-Allow-Headers'),
+      'Access-Control-Allow-Credentials': res.getHeader('Access-Control-Allow-Credentials')
+    }
+  });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Acesse localmente: http://localhost:${PORT}`);

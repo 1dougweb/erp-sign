@@ -24,17 +24,37 @@ const PORT = process.env.PORT || 3000;
 
 // WebSocket removido
 
-// Configuração CORS para permitir acesso de qualquer origem (desenvolvimento)
-app.use(cors({
-  origin: [
+// Manual CORS implementation to ensure headers are sent correctly
+app.use((req, res, next) => {
+  const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:4173',
     'https://automacao-erp-front.qiqivn.easypanel.host'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  ];
+
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else if (!origin) {
+    // Allow requests with no origin (like mobile apps/curl)
+  } else {
+    // Optional: Reflect origin for development or unknown domains (use with caution in strict prod)
+    // res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  // Always allow specific headers and methods
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 app.use(express.json());
 
 // Rotas

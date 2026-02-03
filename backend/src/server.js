@@ -24,31 +24,27 @@ const PORT = process.env.PORT || 3000;
 
 // WebSocket removido
 
-// Manual CORS implementation to ensure headers are sent correctly
+// Manual CORS implementation - Maximally permissive for troubleshooting
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:4173',
-    'https://automacao-erp-front.qiqivn.easypanel.host'
-  ];
+  // Debug log to see what's happening on the server
+  console.log(`[CORS] Method: ${req.method} Path: ${req.path} Origin: ${req.headers.origin}`);
 
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) {
+  // Dynamically set Access-Control-Allow-Origin to the request origin
+  // This allows any domain to access the API with credentials
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-  } else if (!origin) {
-    // Allow requests with no origin (like mobile apps/curl)
   } else {
-    // Optional: Reflect origin for development or unknown domains (use with caution in strict prod)
-    // res.setHeader('Access-Control-Allow-Origin', origin);
+    // If no origin (e.g. server-to-server or Curl), allow all (but credentials might be ignored)
+    res.setHeader('Access-Control-Allow-Origin', '*');
   }
 
-  // Always allow specific headers and methods
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  // Handle preflight requests
+  // Handle preflight requests immediately
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }

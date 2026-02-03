@@ -16,7 +16,7 @@ const getBaseURL = () => {
   }
   
   // Em produção, usa localhost como fallback
-  return 'http://localhost:3000/api';
+  return 'https://automacao-erp-backend.qiqivn.easypanel.host/api';
 };
 
 const api = axios.create({

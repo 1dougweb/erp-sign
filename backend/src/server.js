@@ -26,8 +26,14 @@ const PORT = process.env.PORT || 3000;
 
 // Configuração CORS para permitir acesso de qualquer origem (desenvolvimento)
 app.use(cors({
-  origin: true, // Permite qualquer origem
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://automacao-erp-front.qiqivn.easypanel.host'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
